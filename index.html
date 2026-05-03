@@ -33,9 +33,9 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Navbar / Header */
         header {
             width: 100%;
             padding: 1rem 2rem;
@@ -48,9 +48,9 @@
         .logo {
             font-weight: bold;
             font-size: 1.2rem;
+            letter-spacing: 1px;
         }
 
-        /* Toggle Button */
         #theme-toggle {
             background: none;
             border: none;
@@ -59,6 +59,11 @@
             display: flex;
             align-items: center;
             color: var(--text-color);
+            transition: transform 0.2s ease;
+        }
+
+        #theme-toggle:hover {
+            transform: scale(1.1);
         }
 
         #theme-toggle svg {
@@ -67,11 +72,11 @@
             fill: currentColor;
         }
 
-        /* Main Content */
         main {
             text-align: center;
             padding: 2rem;
             max-width: 800px;
+            flex-grow: 1;
         }
 
         h1 {
@@ -84,13 +89,13 @@
             margin-bottom: 2rem;
         }
 
-        /* Game Section */
         .game-container {
             background: var(--card-bg);
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             display: inline-block;
+            margin-bottom: 2rem;
         }
 
         canvas {
@@ -98,24 +103,29 @@
             background-color: #000;
             display: block;
             border-radius: 5px;
+            max-width: 100%;
+            height: auto;
         }
 
         .game-info {
-            margin-top: 10px;
+            margin-top: 15px;
+            font-size: 1.2rem;
             font-weight: bold;
         }
 
         .controls-hint {
             font-size: 0.9rem;
             margin-top: 10px;
-            opacity: 0.7;
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">daboiyoshi</div>
+        <div class="logo">daboiyoshi.work.gd</div>
         <button id="theme-toggle" aria-label="Toggle dark mode">
             <svg id="sun-icon" viewBox="0 0 24 24" style="display:none;"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>
             <svg id="moon-icon" viewBox="0 0 24 24"><path d="M12.1 2.9c.1-.6-.5-1-1-.8C6.7 3.9 3.8 8.3 4.1 13.2 4.5 18.1 8.7 22 13.6 22c3.1 0 5.9-1.5 7.5-4 .3-.5-.1-1.1-.7-1-4.4.9-8.3-2.4-8.3-6.8 0-2.8 1.6-5.4 4.1-6.7.5-.2.4-.9-.1-.8z"/></svg>
@@ -124,7 +134,7 @@
 
     <main>
         <h1>Welcome to daboiyoshi.work.gd!</h1>
-        <p>A simple, clean place to hang out and play a quick game.</p>
+        <p>Enjoy a smooth game of Snake.</p>
 
         <div class="game-container">
             <canvas id="snakeGame" width="400" height="400"></canvas>
@@ -167,13 +177,20 @@
         };
         let d;
 
-        document.addEventListener("keydown", direction);
+        // Prevent page jumping with Arrow Keys
+        window.addEventListener("keydown", function(e) {
+            if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+                e.preventDefault();
+            }
+            direction(e);
+        }, false);
 
         function direction(event) {
-            if(event.keyCode == 37 && d != "RIGHT") d = "LEFT";
-            else if(event.keyCode == 38 && d != "DOWN") d = "UP";
-            else if(event.keyCode == 39 && d != "LEFT") d = "RIGHT";
-            else if(event.keyCode == 40 && d != "UP") d = "DOWN";
+            let key = event.keyCode;
+            if(key == 37 && d != "RIGHT") d = "LEFT";
+            else if(key == 38 && d != "DOWN") d = "UP";
+            else if(key == 39 && d != "LEFT") d = "RIGHT";
+            else if(key == 40 && d != "UP") d = "DOWN";
         }
 
         function collision(head, array) {
@@ -184,27 +201,33 @@
         }
 
         function draw() {
+            // Background
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+            // Snake
             for(let i = 0; i < snake.length; i++) {
-                ctx.fillStyle = (i == 0) ? "#4a90e2" : "#fff";
+                ctx.fillStyle = (i == 0) ? "#4a90e2" : "#ffffff";
                 ctx.fillRect(snake[i].x, snake[i].y, box, box);
-                ctx.strokeStyle = "black";
+                ctx.strokeStyle = "#000";
                 ctx.strokeRect(snake[i].x, snake[i].y, box, box);
             }
 
+            // Food
             ctx.fillStyle = "#ff4d4d";
             ctx.fillRect(food.x, food.y, box, box);
 
+            // Old head position
             let snakeX = snake[0].x;
             let snakeY = snake[0].y;
 
+            // Move direction
             if( d == "LEFT") snakeX -= box;
             if( d == "UP") snakeY -= box;
             if( d == "RIGHT") snakeX += box;
             if( d == "DOWN") snakeY += box;
 
+            // Eat food logic
             if(snakeX == food.x && snakeY == food.y) {
                 score++;
                 scoreElement.innerHTML = score;
@@ -218,10 +241,11 @@
 
             let newHead = { x: snakeX, y: snakeY };
 
+            // Game Over conditions
             if(snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
                 clearInterval(game);
                 alert("Game Over! Score: " + score);
-                location.reload(); // Simple restart
+                location.reload(); 
             }
 
             snake.unshift(newHead);
