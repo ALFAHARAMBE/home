@@ -1,1161 +1,289 @@
+
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>daboiyoshi.work.gd — IT & Tech Services</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #0a0a0f;
-      --bg2: #111118;
-      --bg3: #1a1a26;
-      --surface: #1e1e2e;
-      --border: rgba(120,120,200,0.15);
-      --accent: #00f5c4;
-      --accent2: #7c6af7;
-      --accent3: #f7a26a;
-      --text: #e8e8f5;
-      --text2: #9090b0;
-      --text3: #5a5a7a;
-      --glow: rgba(0,245,196,0.18);
-      --glow2: rgba(124,106,247,0.18);
-      --snake-head: #00f5c4;
-      --snake-body: #00c4a0;
-      --snake-tail: #008c74;
-      --food: #f7a26a;
-      --grid-line: rgba(255,255,255,0.03);
-      --danger: #ff4e6a;
-      --header-h: 72px;
-    }
-    [data-theme="light"] {
-      --bg: #f0f0f8;
-      --bg2: #e8e8f4;
-      --bg3: #ddddf0;
-      --surface: #ffffff;
-      --border: rgba(80,80,160,0.12);
-      --accent: #008c74;
-      --accent2: #5040d0;
-      --accent3: #c07030;
-      --text: #1a1a2e;
-      --text2: #505070;
-      --text3: #9090b0;
-      --glow: rgba(0,140,116,0.12);
-      --glow2: rgba(80,64,208,0.1);
-      --snake-head: #008c74;
-      --snake-body: #007060;
-      --snake-tail: #005548;
-      --food: #c07030;
-      --grid-line: rgba(0,0,0,0.03);
-      --danger: #cc2244;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Syne', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      transition: background 0.4s, color 0.4s;
-      overflow-x: hidden;
-    }
-
-    /* ── HEADER ── */
-    header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: var(--header-h);
-      background: var(--bg2);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 2.5rem;
-      z-index: 100;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-    .logo-wrap {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.1;
-    }
-    .logo-domain {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.78rem;
-      color: var(--accent);
-      letter-spacing: 0.05em;
-    }
-    .logo-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: 0.02em;
-    }
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
-    .status-pill {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-family: 'Space Mono', monospace;
-      font-size: 0.72rem;
-      color: var(--text2);
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      padding: 0.3rem 0.9rem;
-    }
-    .status-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--accent);
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%,100% { opacity: 1; box-shadow: 0 0 0 0 var(--glow); }
-      50% { opacity: 0.7; box-shadow: 0 0 0 5px transparent; }
-    }
-    .theme-btn {
-      width: 44px; height: 26px;
-      border-radius: 13px;
-      border: 1px solid var(--border);
-      background: var(--bg3);
-      cursor: pointer;
-      position: relative;
-      transition: background 0.3s, border-color 0.3s;
-      outline: none;
-    }
-    .theme-btn::after {
-      content: '';
-      position: absolute;
-      top: 3px; left: 3px;
-      width: 18px; height: 18px;
-      border-radius: 50%;
-      background: var(--accent);
-      transition: transform 0.3s, background 0.3s;
-    }
-    [data-theme="light"] .theme-btn::after {
-      transform: translateX(18px);
-    }
-    .theme-icon {
-      position: absolute;
-      font-size: 10px;
-      top: 50%; left: 50%; transform: translate(-50%,-50%);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* ── HERO ── */
-    .hero {
-      margin-top: var(--header-h);
-      padding: 4rem 2.5rem 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -40%; left: 50%;
-      transform: translateX(-50%);
-      width: 700px; height: 500px;
-      border-radius: 50%;
-      background: radial-gradient(ellipse, var(--glow2) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero-eyebrow {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.72rem;
-      color: var(--accent);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-    .hero-title {
-      font-size: clamp(2.4rem, 6vw, 4.5rem);
-      font-weight: 800;
-      line-height: 1.05;
-      margin-bottom: 1rem;
-      background: linear-gradient(135deg, var(--text) 40%, var(--accent2) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero-sub {
-      font-size: 1rem;
-      color: var(--text2);
-      max-width: 440px;
-      line-height: 1.7;
-      margin-bottom: 2.5rem;
-    }
-    .hero-chips {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 3rem;
-    }
-    .chip {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.7rem;
-      padding: 0.35rem 0.85rem;
-      border-radius: 100px;
-      border: 1px solid var(--border);
-      color: var(--text2);
-      background: var(--surface);
-      letter-spacing: 0.05em;
-    }
-    .chip.accent { border-color: var(--accent); color: var(--accent); }
-    .chip.accent2 { border-color: var(--accent2); color: var(--accent2); }
-
-    /* ── GAME SECTION ── */
-    .game-section {
-      padding: 0 1.5rem 4rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .game-wrap {
-      width: 100%;
-      max-width: 760px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 0 80px var(--glow2), 0 0 0 1px var(--border);
-      transition: box-shadow 0.4s;
-    }
-    .game-topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg3);
-    }
-    .game-title-area {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-    }
-    .game-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-    }
-    .game-label {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.72rem;
-      color: var(--text2);
-      letter-spacing: 0.1em;
-    }
-    .game-stats {
-      display: flex;
-      gap: 2rem;
-      align-items: center;
-    }
-    .stat-item {
-      text-align: center;
-    }
-    .stat-label {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.6rem;
-      color: var(--text3);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      display: block;
-      margin-bottom: 2px;
-    }
-    .stat-value {
-      font-family: 'Space Mono', monospace;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .stat-value.accent { color: var(--accent); }
-    .stat-value.accent2 { color: var(--accent2); }
-    .game-body {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1.5rem;
-      gap: 1.2rem;
-    }
-    canvas#gameCanvas {
-      display: block;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      cursor: crosshair;
-      transition: border-color 0.3s;
-      image-rendering: pixelated;
-    }
-    canvas#gameCanvas.playing { border-color: var(--accent); box-shadow: 0 0 30px var(--glow); }
-    canvas#gameCanvas.dead { border-color: var(--danger); box-shadow: 0 0 30px rgba(255,78,106,0.18); }
-
-    /* overlay */
-    .game-overlay {
-      position: absolute;
-      top: 1.5rem; left: 1.5rem; right: 1.5rem;
-      bottom: 1.2rem;
-      border-radius: 12px;
-      background: rgba(10,10,20,0.88);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1.2rem;
-      z-index: 10;
-      backdrop-filter: blur(4px);
-      transition: opacity 0.3s;
-    }
-    [data-theme="light"] .game-overlay { background: rgba(240,240,252,0.88); }
-    .game-overlay.hidden { display: none; }
-    .overlay-icon {
-      font-size: 2.8rem;
-      line-height: 1;
-    }
-    .overlay-title {
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--text);
-    }
-    .overlay-sub {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--text2);
-      text-align: center;
-      line-height: 1.7;
-    }
-    .btn-play {
-      font-family: 'Syne', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 700;
-      padding: 0.75rem 2.2rem;
-      border-radius: 100px;
-      border: 1px solid var(--accent);
-      background: transparent;
-      color: var(--accent);
-      cursor: pointer;
-      letter-spacing: 0.05em;
-      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-    }
-    .btn-play:hover {
-      background: var(--accent);
-      color: var(--bg);
-      box-shadow: 0 0 24px var(--glow);
-    }
-
-    /* controls hint */
-    .controls-row {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .key {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.65rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 5px;
-      border: 1px solid var(--border);
-      background: var(--bg3);
-      color: var(--text2);
-    }
-    .key-sep {
-      font-size: 0.65rem;
-      color: var(--text3);
-    }
-
-    /* speed selector */
-    .speed-row {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-    .speed-label {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--text3);
-      letter-spacing: 0.08em;
-    }
-    .speed-btn {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.65rem;
-      padding: 0.25rem 0.7rem;
-      border-radius: 100px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text2);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .speed-btn.active, .speed-btn:hover {
-      border-color: var(--accent2);
-      color: var(--accent2);
-      background: var(--bg3);
-    }
-
-    /* mobile d-pad */
-    .dpad {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-    .dpad-row { display: flex; gap: 4px; }
-    .dpad-btn {
-      width: 48px; height: 48px;
-      border-radius: 10px;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      color: var(--text2);
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
-      transition: background 0.15s, border-color 0.15s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .dpad-btn:active { background: var(--accent); border-color: var(--accent); color: var(--bg); }
-    @media (max-width: 600px) {
-      .dpad { display: flex; }
-      .controls-row { display: none; }
-    }
-
-    /* ── FEATURES ── */
-    .features {
-      padding: 3rem 2.5rem 4rem;
-      max-width: 900px;
-      margin: 0 auto;
-      width: 100%;
-    }
-    .section-eyebrow {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.68rem;
-      color: var(--accent);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 0.75rem;
-    }
-    .section-title {
-      font-size: 1.9rem;
-      font-weight: 800;
-      margin-bottom: 2.5rem;
-      color: var(--text);
-    }
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1rem;
-    }
-    .feature-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.4rem 1.5rem;
-      transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
-    }
-    .feature-card:hover {
-      border-color: var(--accent2);
-      box-shadow: 0 0 30px var(--glow2);
-      transform: translateY(-3px);
-    }
-    .feature-icon {
-      width: 38px; height: 38px;
-      border-radius: 10px;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
-      margin-bottom: 1rem;
-    }
-    .feature-name {
-      font-size: 0.95rem;
-      font-weight: 600;
-      margin-bottom: 0.4rem;
-      color: var(--text);
-    }
-    .feature-desc {
-      font-size: 0.8rem;
-      color: var(--text2);
-      line-height: 1.6;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      margin-top: auto;
-      border-top: 1px solid var(--border);
-      background: var(--bg2);
-      padding: 1.5rem 2.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-    .footer-left {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.72rem;
-      color: var(--text3);
-      letter-spacing: 0.05em;
-    }
-    .footer-left span { color: var(--accent); }
-    .footer-right {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.68rem;
-      color: var(--text3);
-    }
-
-    /* ── SCAN LINES (dark only) ── */
-    body::after {
-      content: '';
-      pointer-events: none;
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px);
-      z-index: 999;
-      opacity: 1;
-      transition: opacity 0.4s;
-    }
-    [data-theme="light"] body::after { opacity: 0; }
-
-    /* Particle canvas */
-    #particleCanvas {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.5;
-    }
-    .hero, .game-section, .features, footer { position: relative; z-index: 1; }
-    header { z-index: 100; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>daboiyoshi.work.gd</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --primary: 234 179 8;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: rgb(234 179 8);
+            transform: translateY(-2px);
+        }
+        
+        iframe {
+            transition: all 0.3s ease;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+    </style>
 </head>
-<body>
-
-<canvas id="particleCanvas"></canvas>
-
-<!-- HEADER -->
-<header>
-  <div class="logo-wrap">
-    <span class="logo-domain">daboiyoshi.work.gd</span>
-    <span class="logo-title">IT &amp; Tech Services</span>
-  </div>
-  <div class="header-right">
-    <button class="theme-btn" id="themeToggle" aria-label="Toggle dark/light mode" title="Toggle light/dark mode"></button>
-  </div>
-</header>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-eyebrow">// daboiyoshi.work.gd</div>
-  <h1 class="hero-title">Precision IT.<br/>Powerful Tech.</h1>
-  <p class="hero-sub">Professional IT infrastructure, cybersecurity, and technology services — engineered for reliability.</p>
-  <div class="hero-chips">
-    <span class="chip accent">◈ Networking</span>
-    <span class="chip accent2">◈ Cybersecurity</span>
-    <span class="chip">◈ Cloud Solutions</span>
-    <span class="chip">◈ System Admin</span>
-    <span class="chip">◈ Support 24/7</span>
-  </div>
-</section>
-
-<!-- GAME SECTION -->
-<section class="game-section">
-  <div class="game-wrap">
-    <div class="game-topbar">
-      <div class="game-title-area">
-        <div class="game-dot" style="background:#ff5f57"></div>
-        <div class="game-dot" style="background:#ffbd2e"></div>
-        <div class="game-dot" style="background:#28ca41"></div>
-        <span class="game-label" style="margin-left:0.4rem">SNAKE.exe — v2.0</span>
-      </div>
-      <div class="game-stats">
-        <div class="stat-item">
-          <span class="stat-label">Score</span>
-          <span class="stat-value accent" id="scoreDisplay">000</span>
+<body class="bg-white text-zinc-900 dark:bg-zinc-950 dark:text-white min-h-screen transition-colors duration-300">
+    <!-- Navbar -->
+    <nav class="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-yellow-500 rounded-xl flex items-center justify-center text-zinc-900 font-bold text-xl">D</div>
+                    <span class="font-semibold text-xl tracking-tight">daboiyoshi.work.gd</span>
+                </div>
+                
+                <!-- Menu -->
+                <div class="flex items-center gap-8">
+                    <div onclick="showPage('home')" class="nav-link cursor-pointer font-medium text-lg flex items-center gap-1.5" id="nav-home">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Home</span>
+                    </div>
+                    <div onclick="showPage('info')" class="nav-link cursor-pointer font-medium text-lg flex items-center gap-1.5" id="nav-info">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>Info</span>
+                    </div>
+                    
+                    <!-- Dark/Light Toggle -->
+                    <button onclick="toggleTheme()" id="theme-toggle"
+                            class="w-10 h-10 flex items-center justify-center rounded-2xl bg-zinc-200 dark:bg-zinc-800 hover:bg-yellow-500 hover:text-zinc-900 transition-colors">
+                        <i class="fa-solid fa-moon text-lg" id="theme-icon"></i>
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="stat-item">
-          <span class="stat-label">High</span>
-          <span class="stat-value accent2" id="highDisplay">000</span>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        
+        <!-- HOME PAGE -->
+        <div id="home-page" class="content-section active">
+            <div class="text-center mb-10">
+                <h1 class="text-5xl sm:text-6xl font-bold tracking-tighter mb-4">
+                    Welcome to <span class="text-yellow-500">daboiyoshi.work.gd</span>
+                </h1>
+                <p class="text-xl text-zinc-600 dark:text-zinc-400 max-w-md mx-auto">
+                    Play the classic snake game right here
+                    <br>
+                    Credits to <a href="https://www.daboiyoshi.com/">Snake Arcade</a>
+                </p>
+            </div>
+            
+            <!-- Game Container -->
+            <div class="max-w-4xl mx-auto bg-zinc-100 dark:bg-zinc-900 rounded-3xl p-4 shadow-2xl border border-zinc-200 dark:border-zinc-800">
+                <div class="flex justify-between items-center mb-4 px-2">
+                    <div class="text-sm font-medium text-zinc-600 dark:text-zinc-400">Snake Game</div>
+                    <button onclick="toggleFullscreen()" 
+                            class="flex items-center gap-2 bg-zinc-200 hover:bg-yellow-500 hover:text-zinc-900 dark:bg-zinc-800 dark:hover:bg-yellow-500 px-5 py-2 rounded-2xl text-sm font-medium transition-all">
+                        <i class="fa-solid fa-expand"></i>
+                        <span>Fullscreen</span>
+                    </button>
+                </div>
+                
+                <!-- Game Embed -->
+                <div class="relative rounded-2xl overflow-hidden bg-black aspect-video">
+                    <iframe id="game-iframe" 
+                            src="https://docs.daboiyoshi.com/game/index.html"
+                            class="w-full h-full border-0"
+                            allowfullscreen
+                            allow="fullscreen"></iframe>
+                </div>
+            </div>
+            <p class="text-xl text-zinc-600 dark:text-zinc-400 max-w-md mx-auto">
+                This content was approved to be on this website by Snake Arcade and daboiYoshi (info@daboiyoshi.com)
+            </p>
+            
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+                <div class="card bg-white dark:bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
+                    <div class="p-6">
+                        <h3 class="font-semibold mb-1">Retro Vibes</h3>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-400">Classic gameplay</p>
+                    </div>
+                </div>
+                
+                <div class="card bg-white dark:bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
+                    <div class="p-6">
+                        <h3 class="font-semibold mb-1">High Scores</h3>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-400">Beat your record</p>
+                    </div>
+                </div>
+                
+                <div class="card bg-white dark:bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
+                    <div class="p-6">
+                        <h3 class="font-semibold mb-1">Pixel Perfect</h3>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-400">Mobile optimized</p>
+                    </div>
+                </div>
+                
+                <div class="card bg-white dark:bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
+                    <div class="p-6">
+                        <h3 class="font-semibold mb-1">Endless Fun</h3>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-400">Play anytime</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-item">
-          <span class="stat-label">Level</span>
-          <span class="stat-value" id="levelDisplay">01</span>
+        
+        <!-- INFO PAGE -->
+        <div id="info-page" class="content-section">
+            <div class="max-w-2xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8">About This Site</h2>
+                
+                <div class="prose dark:prose-invert max-w-none">
+                    <p class="text-lg leading-relaxed mb-8">
+                        This domain is free for the first year and was purchased through 
+                        <a href="https://freedomain.one" target="_blank" 
+                           class="text-yellow-500 hover:underline">freedomain.one</a>.
+                    </p>
+                    
+                    <div class="bg-zinc-100 dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 mb-10">
+                        <div class="flex items-start gap-6">
+                            <div class="w-12 h-12 bg-yellow-500 rounded-2xl flex-shrink-0 flex items-center justify-center text-3xl text-zinc-900">📧</div>
+                            <div>
+                                <h3 class="font-semibold text-2xl mb-2">Contact</h3>
+                                <a href="mailto:info@daboiyoshi.com" 
+                                   class="text-yellow-500 hover:text-yellow-400 text-xl font-medium">
+                                    info@daboiyoshi.com
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-zinc-600 dark:text-zinc-400 text-sm">
+                        <p>Thank you for visiting. Enjoy the game!</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="stat-item">
-          <span class="stat-label">Length</span>
-          <span class="stat-value" id="lengthDisplay">03</span>
+    </div>
+
+    <footer class="border-t border-zinc-200 dark:border-zinc-800 py-8 mt-20">
+        <div class="max-w-7xl mx-auto px-6 text-center text-sm text-zinc-400 dark:text-zinc-500">
+            © 2026 daboiyoshi.work.gd • All Rights Reserved | <a href="https://www.daboiyoshi.com/">Snake Arcade</a> | <a href="https://github.com/daboiyoshi">Github</a> 
         </div>
-      </div>
-    </div>
+    </footer>
 
-    <div class="game-body">
-      <canvas id="gameCanvas" width="560" height="420"></canvas>
-
-      <!-- Start / Game Over Overlay -->
-      <div class="game-overlay" id="gameOverlay">
-        <div class="overlay-icon" id="overlayIcon">🐍</div>
-        <div class="overlay-title" id="overlayTitle">SNAKE.exe</div>
-        <div class="overlay-sub" id="overlaySub">Navigate the grid. Consume data packets.<br/>Avoid collisions with the system boundary.</div>
-        <button class="btn-play" id="startBtn">▶ INITIALIZE</button>
-      </div>
-
-      <!-- Controls -->
-      <div class="controls-row">
-        <span class="key">W</span><span class="key">↑</span>
-        <span class="key-sep">·</span>
-        <span class="key">S</span><span class="key">↓</span>
-        <span class="key-sep">·</span>
-        <span class="key">A</span><span class="key">←</span>
-        <span class="key-sep">·</span>
-        <span class="key">D</span><span class="key">→</span>
-        <span class="key-sep">  |  </span>
-        <span class="key">SPACE</span> <span class="key-sep">pause</span>
-      </div>
-
-      <!-- Mobile D-Pad -->
-      <div class="dpad" id="dpad">
-        <div class="dpad-row">
-          <div class="dpad-btn" data-dir="up">▲</div>
-        </div>
-        <div class="dpad-row">
-          <div class="dpad-btn" data-dir="left">◀</div>
-          <div class="dpad-btn" data-dir="down">▼</div>
-          <div class="dpad-btn" data-dir="right">▶</div>
-        </div>
-      </div>
-
-      <!-- Speed -->
-      <div class="speed-row">
-        <span class="speed-label">SPEED:</span>
-        <button class="speed-btn active" data-speed="1">SLOW</button>
-        <button class="speed-btn" data-speed="2">NORMAL</button>
-        <button class="speed-btn" data-speed="3">FAST</button>
-        <button class="speed-btn" data-speed="4">TURBO</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FEATURES -->
-<section class="features">
-  <div class="section-eyebrow">// Services</div>
-  <h2 class="section-title">What We Deploy</h2>
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon">🛡️</div>
-      <div class="feature-name">Cybersecurity</div>
-      <div class="feature-desc">Threat detection, firewall hardening, and penetration testing to keep your systems locked.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">☁️</div>
-      <div class="feature-name">Cloud Infrastructure</div>
-      <div class="feature-desc">Scalable cloud architecture on AWS, GCP, and Azure — designed for zero downtime.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🔌</div>
-      <div class="feature-name">Network Engineering</div>
-      <div class="feature-desc">LAN/WAN design, VPN configuration, and enterprise-grade network management.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">⚙️</div>
-      <div class="feature-name">System Administration</div>
-      <div class="feature-desc">Linux & Windows server management, automation, and infrastructure monitoring.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">📡</div>
-      <div class="feature-name">IT Support</div>
-      <div class="feature-desc">Helpdesk, remote support, and proactive maintenance — 24/7 availability.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">💾</div>
-      <div class="feature-name">Data & Backup</div>
-      <div class="feature-desc">Disaster recovery planning, secure backups, and data integrity monitoring.</div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-left">
-    &copy; 2026 <span>daboiyoshi.work.gd</span> — IT &amp; Tech Services. All rights reserved.
-  </div>
-  <div class="footer-right">
-    Built with precision &amp; purpose
-  </div>
-</footer>
-
-<script>
-/* ─── THEME TOGGLE ─── */
-const html = document.documentElement;
-const themeBtn = document.getElementById('themeToggle');
-themeBtn.addEventListener('click', () => {
-  html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
-});
-
-/* ─── PARTICLE SYSTEM ─── */
-(function(){
-  const pc = document.getElementById('particleCanvas');
-  const ctx = pc.getContext('2d');
-  let W, H, particles = [];
-  const resize = () => { W = pc.width = window.innerWidth; H = pc.height = window.innerHeight; };
-  resize();
-  window.addEventListener('resize', resize);
-  const N = 60;
-  for(let i=0;i<N;i++) particles.push({
-    x: Math.random()*window.innerWidth,
-    y: Math.random()*window.innerHeight,
-    vx: (Math.random()-0.5)*0.3,
-    vy: (Math.random()-0.5)*0.3,
-    r: Math.random()*1.5+0.5,
-    a: Math.random()*0.6+0.1
-  });
-  function drawParticles(){
-    ctx.clearRect(0,0,W,H);
-    const isDark = html.dataset.theme !== 'light';
-    const col = isDark ? '0,245,196' : '0,140,116';
-    particles.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      if(p.x<0) p.x=W; if(p.x>W) p.x=0;
-      if(p.y<0) p.y=H; if(p.y>H) p.y=0;
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle = `rgba(${col},${p.a})`;
-      ctx.fill();
-    });
-    // draw connections
-    for(let i=0;i<particles.length;i++){
-      for(let j=i+1;j<particles.length;j++){
-        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
-        const d=Math.sqrt(dx*dx+dy*dy);
-        if(d<120){
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x,particles[i].y);
-          ctx.lineTo(particles[j].x,particles[j].y);
-          ctx.strokeStyle = `rgba(${col},${0.08*(1-d/120)})`;
-          ctx.lineWidth=0.5;
-          ctx.stroke();
+    <script>
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            updateThemeIcon(isDark);
         }
-      }
-    }
-    requestAnimationFrame(drawParticles);
-  }
-  drawParticles();
-})();
 
-/* ─── SNAKE GAME ─── */
-(function(){
-  const canvas = document.getElementById('gameCanvas');
-  const ctx = canvas.getContext('2d');
-  const overlay = document.getElementById('gameOverlay');
-  const startBtn = document.getElementById('startBtn');
-  const overlayTitle = document.getElementById('overlayTitle');
-  const overlaySub = document.getElementById('overlaySub');
-  const overlayIcon = document.getElementById('overlayIcon');
-  const scoreEl = document.getElementById('scoreDisplay');
-  const highEl = document.getElementById('highDisplay');
-  const levelEl = document.getElementById('levelDisplay');
-  const lengthEl = document.getElementById('lengthDisplay');
-
-  const CELL = 20;
-  const COLS = canvas.width / CELL;   // 28
-  const ROWS = canvas.height / CELL;  // 21
-
-  let snake, dir, nextDir, food, specialFood, score, highScore, level, gameState, tickInterval, tick, paused;
-  let speedMult = 1;
-  let particles = [];
-
-  const SPEEDS = { 1: 180, 2: 120, 3: 75, 4: 45 };
-
-  document.querySelectorAll('.speed-btn').forEach(b => {
-    b.addEventListener('click', () => {
-      document.querySelectorAll('.speed-btn').forEach(x => x.classList.remove('active'));
-      b.classList.add('active');
-      speedMult = parseInt(b.dataset.speed);
-      if(gameState === 'playing' && !paused) resetTick();
-    });
-  });
-
-  function resetTick(){
-    clearInterval(tickInterval);
-    tickInterval = setInterval(gameTick, SPEEDS[speedMult]);
-  }
-
-  function fmt(n){ return String(n).padStart(3,'0'); }
-
-  function getCSS(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
-
-  function init(){
-    snake = [
-      {x:14,y:10},{x:13,y:10},{x:12,y:10}
-    ];
-    dir = {x:1,y:0};
-    nextDir = {x:1,y:0};
-    score = 0;
-    level = 1;
-    tick = 0;
-    paused = false;
-    specialFood = null;
-    particles = [];
-    placeFood();
-    updateStats();
-  }
-
-  function placeFood(){
-    let pos;
-    do {
-      pos = {x:Math.floor(Math.random()*COLS), y:Math.floor(Math.random()*ROWS)};
-    } while(snake.some(s=>s.x===pos.x&&s.y===pos.y));
-    food = pos;
-  }
-
-  function placeSpecial(){
-    let pos;
-    do {
-      pos = {x:Math.floor(Math.random()*COLS), y:Math.floor(Math.random()*ROWS)};
-    } while(snake.some(s=>s.x===pos.x&&s.y===pos.y) || (food.x===pos.x&&food.y===pos.y));
-    specialFood = {x:pos.x, y:pos.y, timer:120};
-  }
-
-  function updateStats(){
-    scoreEl.textContent = fmt(score);
-    highEl.textContent = fmt(highScore||0);
-    levelEl.textContent = String(level).padStart(2,'0');
-    lengthEl.textContent = String(snake.length).padStart(2,'0');
-  }
-
-  function startGame(){
-    overlay.classList.add('hidden');
-    canvas.className = 'playing';
-    init();
-    gameState = 'playing';
-    resetTick();
-    draw();
-  }
-
-  function gameOver(){
-    gameState = 'dead';
-    clearInterval(tickInterval);
-    canvas.className = 'dead';
-    if(score > (highScore||0)) highScore = score;
-    updateStats();
-    overlayIcon.textContent = '💀';
-    overlayTitle.textContent = 'SYSTEM FAILURE';
-    overlaySub.innerHTML = `FATAL: Collision detected<br/>Score: ${fmt(score)} | High Score: ${fmt(highScore)}`;
-    startBtn.textContent = '⟳ RESTART';
-    overlay.classList.remove('hidden');
-    deathBurst();
-  }
-
-  function deathBurst(){
-    const head = snake[0];
-    for(let i=0;i<24;i++){
-      const angle = (i/24)*Math.PI*2;
-      const speed = Math.random()*3+1;
-      particles.push({
-        x: (head.x+0.5)*CELL, y: (head.y+0.5)*CELL,
-        vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
-        life: 1, decay: 0.03+Math.random()*0.02,
-        r: Math.random()*4+2, type:'death'
-      });
-    }
-  }
-
-  function eatParticles(x,y){
-    for(let i=0;i<10;i++){
-      const angle = Math.random()*Math.PI*2;
-      const speed = Math.random()*2.5+0.5;
-      particles.push({
-        x:(x+0.5)*CELL, y:(y+0.5)*CELL,
-        vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed,
-        life:1, decay:0.05+Math.random()*0.03,
-        r:Math.random()*3+1, type:'eat'
-      });
-    }
-  }
-
-  function gameTick(){
-    if(paused) return;
-    tick++;
-    dir = nextDir;
-
-    const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
-
-    // wall collision
-    if(head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS){ gameOver(); return; }
-    // self collision (skip last segment since it moves)
-    if(snake.slice(0,-1).some(s=>s.x===head.x&&s.y===head.y)){ gameOver(); return; }
-
-    snake.unshift(head);
-
-    let grew = false;
-    if(head.x===food.x && head.y===food.y){
-      score += 10 * level;
-      grew = true;
-      eatParticles(food.x, food.y);
-      placeFood();
-      if(score >= level*100) level++;
-      if(tick%7===0) placeSpecial();
-    } else if(specialFood && head.x===specialFood.x && head.y===specialFood.y){
-      score += 50 * level;
-      grew = true;
-      eatParticles(specialFood.x, specialFood.y);
-      specialFood = null;
-    } else {
-      snake.pop();
-    }
-
-    if(specialFood){
-      specialFood.timer--;
-      if(specialFood.timer<=0) specialFood=null;
-    }
-
-    if(score > (highScore||0)) highScore = score;
-    updateStats();
-
-    // auto level up speed
-    if(gameState==='playing') resetTick();
-
-    draw();
-  }
-
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    const isDark = html.dataset.theme !== 'light';
-
-    // Grid
-    ctx.strokeStyle = getCSS('--grid-line');
-    ctx.lineWidth = 1;
-    for(let x=0;x<=canvas.width;x+=CELL){
-      ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke();
-    }
-    for(let y=0;y<=canvas.height;y+=CELL){
-      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke();
-    }
-
-    // Corner markers
-    ctx.strokeStyle = isDark ? 'rgba(0,245,196,0.2)' : 'rgba(0,140,116,0.2)';
-    ctx.lineWidth = 1.5;
-    const mk = 12;
-    [[0,0],[canvas.width,0],[0,canvas.height],[canvas.width,canvas.height]].forEach(([cx,cy])=>{
-      const sx = cx===0?0:cx-mk, ex = cx===0?mk:cx;
-      const sy = cy===0?0:cy-mk, ey = cy===0?mk:cy;
-      ctx.beginPath(); ctx.moveTo(sx,cy); ctx.lineTo(ex,cy); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(cx,sy); ctx.lineTo(cx,ey); ctx.stroke();
-    });
-
-    // Snake
-    snake.forEach((seg,i)=>{
-      const ratio = i/(snake.length-1||1);
-      const headColor = getCSS('--snake-head');
-      const bodyColor = getCSS('--snake-body');
-      const tailColor = getCSS('--snake-tail');
-
-      // interpolate color
-      let r,g,b;
-      const ph = hexToRgb(headColor), pb = hexToRgb(bodyColor), pt = hexToRgb(tailColor);
-      if(ratio<0.5){
-        const t=ratio*2;
-        r=lerp(ph.r,pb.r,t); g=lerp(ph.g,pb.g,t); b=lerp(ph.b,pb.b,t);
-      } else {
-        const t=(ratio-0.5)*2;
-        r=lerp(pb.r,pt.r,t); g=lerp(pb.g,pt.g,t); b=lerp(pb.b,pt.b,t);
-      }
-
-      const alpha = 1 - ratio*0.5;
-      const pad = i===0 ? 2 : 3;
-
-      ctx.fillStyle = `rgba(${Math.round(r)},${Math.round(g)},${Math.round(b)},${alpha})`;
-      roundRect(ctx, seg.x*CELL+pad, seg.y*CELL+pad, CELL-pad*2, CELL-pad*2, i===0?6:4);
-      ctx.fill();
-
-      // Head glow
-      if(i===0){
-        ctx.save();
-        ctx.shadowColor = headColor;
-        ctx.shadowBlur = 12;
-        ctx.fillStyle = headColor;
-        roundRect(ctx, seg.x*CELL+4, seg.y*CELL+4, CELL-8, CELL-8, 5);
-        ctx.fill();
-        ctx.restore();
-
-        // Eyes
-        const ex1 = seg.x*CELL + CELL*0.3;
-        const ex2 = seg.x*CELL + CELL*0.7;
-        const ey = seg.y*CELL + CELL*0.35;
-        if(dir.x===0){
-          // vertical movement — eyes side by side
-          ctx.fillStyle = isDark?'#0a0a0f':'#f0f0f8';
-          ctx.beginPath(); ctx.arc(ex1,ey,2,0,Math.PI*2); ctx.fill();
-          ctx.beginPath(); ctx.arc(ex2,ey,2,0,Math.PI*2); ctx.fill();
-        } else {
-          ctx.fillStyle = isDark?'#0a0a0f':'#f0f0f8';
-          ctx.beginPath(); ctx.arc(ex1,seg.y*CELL+CELL*0.3,2,0,Math.PI*2); ctx.fill();
-          ctx.beginPath(); ctx.arc(ex1,seg.y*CELL+CELL*0.7,2,0,Math.PI*2); ctx.fill();
+        function updateThemeIcon(isDark) {
+            const icon = document.getElementById('theme-icon');
+            if (isDark) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
         }
-      }
-
-      // Segment border
-      ctx.strokeStyle = `rgba(${Math.round(r)},${Math.round(g)},${Math.round(b)},${alpha*0.3})`;
-      ctx.lineWidth = 0.5;
-      roundRect(ctx, seg.x*CELL+pad, seg.y*CELL+pad, CELL-pad*2, CELL-pad*2, i===0?6:4);
-      ctx.stroke();
-    });
-
-    // Food
-    const fc = getCSS('--food');
-    const fx = food.x*CELL, fy = food.y*CELL;
-    // pulsing ring
-    const pulse = (Math.sin(tick*0.15)+1)*0.5;
-    ctx.save();
-    ctx.strokeStyle = fc.replace('#','rgba(').replace(/^rgba\((.{6})\)/,(_,h)=>`rgba(${parseInt(h.slice(0,2),16)},${parseInt(h.slice(2,4),16)},${parseInt(h.slice(4,6),16)},${0.3+pulse*0.3})`);
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.arc(fx+CELL/2, fy+CELL/2, CELL*0.5+pulse*4, 0, Math.PI*2);
-    ctx.stroke();
-    ctx.restore();
-    // inner
-    ctx.save();
-    ctx.shadowColor = fc;
-    ctx.shadowBlur = 10;
-    ctx.fillStyle = fc;
-    ctx.beginPath();
-    ctx.arc(fx+CELL/2, fy+CELL/2, CELL*0.3, 0, Math.PI*2);
-    ctx.fill();
-    ctx.restore();
-    // data packet icon (small square grid)
-    ctx.fillStyle = isDark?'rgba(0,0,0,0.4)':'rgba(255,255,255,0.4)';
-    ctx.fillRect(fx+CELL/2-3, fy+CELL/2-3, 6, 6);
-
-    // Special food
-    if(specialFood){
-      const sf = specialFood;
-      const sfx = sf.x*CELL, sfy = sf.y*CELL;
-      const sfPulse = (Math.sin(tick*0.25)+1)*0.5;
-      const sfAlpha = sf.timer<30 ? sf.timer/30 : 1;
-      ctx.save();
-      ctx.globalAlpha = sfAlpha;
-      ctx.shadowColor = getCSS('--accent2');
-      ctx.shadowBlur = 16;
-      ctx.fillStyle = getCSS('--accent2');
-      ctx.beginPath();
-      // star shape
-      for(let i=0;i<5;i++){
-        const a = (i/5)*Math.PI*2 - Math.PI/2;
-        const ia = a + Math.PI/5;
-        const r1 = CELL*0.35, r2 = CELL*0.15;
-        if(i===0) ctx.moveTo(sfx+CELL/2+Math.cos(a)*r1, sfy+CELL/2+Math.sin(a)*r1);
-        else ctx.lineTo(sfx+CELL/2+Math.cos(a)*r1, sfy+CELL/2+Math.sin(a)*r1);
-        ctx.lineTo(sfx+CELL/2+Math.cos(ia)*r2, sfy+CELL/2+Math.sin(ia)*r2);
-      }
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-    }
-
-    // Particles
-    particles = particles.filter(p=>p.life>0);
-    particles.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy;
-      p.vy+=0.08; // gravity
-      p.life-=p.decay;
-      const col = p.type==='death' ? getCSS('--danger') : getCSS('--food');
-      ctx.save();
-      ctx.globalAlpha = Math.max(0,p.life);
-      ctx.fillStyle = col;
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);
-      ctx.fill();
-      ctx.restore();
-    });
-
-    // Paused overlay
-    if(paused){
-      ctx.save();
-      ctx.fillStyle = isDark ? 'rgba(10,10,20,0.6)' : 'rgba(240,240,252,0.6)';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = getCSS('--text');
-      ctx.font = "bold 28px 'Space Mono', monospace";
-      ctx.textAlign = 'center';
-      ctx.fillText('// PAUSED', canvas.width/2, canvas.height/2-10);
-      ctx.font = "12px 'Space Mono', monospace";
-      ctx.fillStyle = getCSS('--text2');
-      ctx.fillText('press SPACE to resume', canvas.width/2, canvas.height/2+20);
-      ctx.restore();
-    }
-
-    if(gameState==='playing') requestAnimationFrame(draw);
-  }
-
-  // Helpers
-  function hexToRgb(hex){
-    hex = hex.replace(/^#/,'');
-    if(hex.length===3) hex=hex.split('').map(c=>c+c).join('');
-    return { r:parseInt(hex.slice(0,2),16), g:parseInt(hex.slice(2,4),16), b:parseInt(hex.slice(4,6),16) };
-  }
-  function lerp(a,b,t){ return a+(b-a)*t; }
-  function roundRect(c,x,y,w,h,r){
-    c.beginPath();
-    c.moveTo(x+r,y);
-    c.lineTo(x+w-r,y);
-    c.quadraticCurveTo(x+w,y,x+w,y+r);
-    c.lineTo(x+w,y+h-r);
-    c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-    c.lineTo(x+r,y+h);
-    c.quadraticCurveTo(x,y+h,x,y+h-r);
-    c.lineTo(x,y+r);
-    c.quadraticCurveTo(x,y,x+r,y);
-    c.closePath();
-  }
-
-  // Input
-  const dirMap = {
-    ArrowUp:{x:0,y:-1}, ArrowDown:{x:0,y:1}, ArrowLeft:{x:-1,y:0}, ArrowRight:{x:1,y:0},
-    w:{x:0,y:-1}, s:{x:0,y:1}, a:{x:-1,y:0}, d:{x:1,y:0},
-    W:{x:0,y:-1}, S:{x:0,y:1}, A:{x:-1,y:0}, D:{x:1,y:0},
-  };
-  document.addEventListener('keydown', e => {
-    if(gameState!=='playing') return;
-    if(e.key===' '){ e.preventDefault(); paused=!paused; if(!paused) draw(); return; }
-    const d = dirMap[e.key];
-    if(d){
-      e.preventDefault();
-      if(d.x !== -dir.x || d.y !== -dir.y) nextDir = d;
-    }
-  });
-
-  // Mobile d-pad
-  document.querySelectorAll('.dpad-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      if(gameState!=='playing') return;
-      const map = {up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};
-      const d = map[btn.dataset.dir];
-      if(d && (d.x !== -dir.x || d.y !== -dir.y)) nextDir = d;
-    });
-  });
-
-  startBtn.addEventListener('click', startGame);
-
-  // Initial draw
-  highScore = 0;
-  gameState = 'idle';
-})();
-</script>
+        
+        function initTheme() {
+            // Respect localStorage, otherwise fallback to system preference
+            const savedTheme = localStorage.theme;
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+            
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            updateThemeIcon(isDark);
+        }
+        
+        function showPage(page) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(page + '-page').classList.add('active');
+            
+            // Update nav styles
+            document.getElementById('nav-home').classList.toggle('text-yellow-500', page === 'home');
+            document.getElementById('nav-info').classList.toggle('text-yellow-500', page === 'info');
+        }
+        
+        function toggleFullscreen() {
+            const iframe = document.getElementById('game-iframe');
+            
+            if (!document.fullscreenElement) {
+                if (iframe.requestFullscreen) {
+                    iframe.requestFullscreen();
+                } else if (iframe.webkitRequestFullscreen) {
+                    iframe.webkitRequestFullscreen();
+                } else if (iframe.msRequestFullscreen) {
+                    iframe.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+        
+        // Keyboard shortcut for fullscreen (F key)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'f' || e.key === 'F') {
+                const homePage = document.getElementById('home-page');
+                if (homePage.classList.contains('active')) {
+                    e.preventDefault();
+                    toggleFullscreen();
+                }
+            }
+        });
+        
+        // Initialize everything
+        window.onload = function() {
+            initTheme();
+            // Show home by default
+            showPage('home');
+            
+            // Make sure iframe loads properly
+            const iframe = document.getElementById('game-iframe');
+            iframe.addEventListener('load', () => {
+                console.log('Snake game loaded successfully');
+            });
+        }
+    </script>
 </body>
 </html>
+```
